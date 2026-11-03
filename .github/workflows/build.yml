@@ -29,14 +29,13 @@ jobs:
         run: |
           echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
-          export ANDROID_HOME=$ANDROID_SDK_ROOT
-          echo "Android Home is: $ANDROID_HOME"
-          which adb || true
+          echo "$ANDROID_SDK_ROOT/platform-tools" >> $GITHUB_PATH
+          echo "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
       - name: Start ADB Server
         run: |
-          export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
           adb start-server || true
+          adb devices || true
 
       - name: Download Godot
         run: |
@@ -59,16 +58,10 @@ jobs:
 
       - name: Export Debug APK
         run: |
-          export ANDROID_HOME=$ANDROID_SDK_ROOT
-          export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT
-          export JAVA_HOME=$JAVA_HOME
-          export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
-          
           mkdir -p build/android
           
-          # Start ADB server and verify connection
+          # Ensure ADB is running inside the export step as well
           adb start-server || true
-          adb devices || true
           
           # Run godot once to initialize settings, then export
           godot --path . --headless --editor --quit || true
