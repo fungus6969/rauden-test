@@ -25,6 +25,11 @@ jobs:
         with:
           packages: 'platforms;android-33 build-tools;33.0.2 platform-tools'
 
+      - name: Configure Android SDK Path for Godot
+        run: |
+          echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+          echo "export ANDROID_HOME=$ANDROID_SDK_ROOT" >> ~/.bashrc
+
       - name: Start ADB Server
         run: |
           adb start-server || true
@@ -47,7 +52,7 @@ jobs:
 
       - name: Export Debug APK
         run: |
-          godot --headless --export-debug "Android" build/android/raiden-game.apk
+          godot --path . --headless --export-debug "Android" build/android/raiden-game.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
