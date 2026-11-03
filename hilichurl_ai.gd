@@ -26,7 +26,7 @@ enum State {
 @export var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity", 24.0)
 
 @export_group("Item Drop on Death")
-@export var drop_item_scene: PackedScene = preload("res://scenes/collectible_drop.tscn")
+@export var drop_item_scene: PackedScene
 @export var drop_chance: float = 1.0 # 100% drop on kill
 
 @export_group("AI Radii")
@@ -240,7 +240,6 @@ func _change_state(new_state: State) -> void:
 			_set_hitbox_active(false)
 			if telegraph_cue: telegraph_cue.visible = false
 			animated_sprite.play("dead")
-			# Hilarious cartoon pancake ground splat!
 			rotation_degrees.x = -85.0
 			scale = Vector3(1.45, 0.35, 1.35)
 			collision_shape.set_deferred("disabled", true)
