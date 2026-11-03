@@ -25,9 +25,14 @@ jobs:
         with:
           packages: 'platforms;android-33 build-tools;33.0.2 platform-tools'
 
-      - name: Configure Android Environment
+      - name: Set Android Environment Variables
         run: |
           echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+          # Godot looks for SDK paths in editor settings, let's make sure adb/jarsigner are accessible
+          export ANDROID_HOME=$ANDROID_SDK_ROOT
+          echo "Android Home is: $ANDROID_HOME"
+          which adb || true
 
       - name: Start ADB Server
         run: |
@@ -51,6 +56,7 @@ jobs:
 
       - name: Export Debug APK
         run: |
+          export ANDROID_HOME=$ANDROID_SDK_ROOT
           godot --path . --headless --export-debug "Android" build/android/raiden-game.apk
 
       - name: Upload APK Artifact
