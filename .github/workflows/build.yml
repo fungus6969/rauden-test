@@ -1,0 +1,47 @@
+name: Build Godot APK
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Export Godot Game (Android)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download Godot
+        run: |
+          wget https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip
+          unzip Godot_v4.3-stable_linux.x86_64.zip
+          mv Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Download Godot Export Templates
+        run: |
+          wget https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates/4.3.stable
+          unzip Godot_v4.3-stable_export_templates.tpz -d temp_templates
+          find temp_templates -type f \( -name "android_debug.apk" -o -name "android_release.apk" -o -name "*.tres" \) -exec cp {} ~/.local/share/godot/export_templates/4.3.stable/ \;
+
+      - name: Create Export Directory
+        run: mkdir -p build/android
+
+      - name: Export Debug APK
+        run: |
+          godot --headless --export-debug "Android" build/android/raiden-game.apk
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: raiden-game-apk
+          path: build/android/raiden-game.apk
