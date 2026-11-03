@@ -61,9 +61,9 @@ jobs:
         run: |
           export ANDROID_HOME=$ANDROID_SDK_ROOT
           export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT
+          export JAVA_HOME=$JAVA_HOME
           mkdir -p build/android
           godot --path . --verbose --headless --export-debug "Android" build/android/raiden-game.apk
-
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
