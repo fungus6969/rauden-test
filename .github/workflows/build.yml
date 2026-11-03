@@ -56,7 +56,8 @@ jobs:
 
       - name: Export Debug APK
         run: |
-          export ANDROID_HOME=$ANDROID_SDK_ROOT
+          mkdir -p ~/.config/godot/
+          echo "export/android/android_sdk_path = \"$ANDROID_SDK_ROOT\"" > ~/.config/godot/editor_settings-4.tres
           godot --path . --headless --export-debug "Android" build/android/raiden-game.apk
 
       - name: Upload APK Artifact
