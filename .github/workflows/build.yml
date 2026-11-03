@@ -63,9 +63,8 @@ jobs:
           # Ensure ADB is running
           adb start-server || true
           
-          # Run godot to export the debug apk directly with verbose logging
-          godot --path . --verbose --headless --export-debug "Android" build/android/raiden-game.apk || \
-          godot --path . --verbose --headless --export-pack "Android" build/android/raiden-game.pck || exit 1
+          # Run godot to export the debug apk directly
+          godot --path . --verbose --headless --export-debug "Android" build/android/raiden-game.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
