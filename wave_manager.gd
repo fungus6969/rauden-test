@@ -11,7 +11,7 @@ signal enemy_count_changed(remaining: int)
 @export var infinite_mode: bool = true
 @export var total_waves: int = 5
 @export var intermission_delay: float = 3.5
-@export var hilichurl_scene: PackedScene = preload("res://scenes/hilichurl_enemy.tscn")
+@export var hilichurl_scene: PackedScene
 
 @export_group("Spawn Anchors")
 @export var spawn_points: Array[Node3D] = []
@@ -47,7 +47,6 @@ func start_next_wave() -> void:
 
 func _spawn_single_enemy(index: int) -> void:
 	if not hilichurl_scene:
-		push_error("WaveManager: Hilichurl PackedScene not set!")
 		return
 
 	var enemy_inst = hilichurl_scene.instantiate() as HilichurlEnemy
