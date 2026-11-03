@@ -29,13 +29,13 @@ jobs:
         run: |
           echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
-          # Godot looks for SDK paths in editor settings, let's make sure adb/jarsigner are accessible
           export ANDROID_HOME=$ANDROID_SDK_ROOT
           echo "Android Home is: $ANDROID_HOME"
           which adb || true
 
       - name: Start ADB Server
         run: |
+          export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
           adb start-server || true
 
       - name: Download Godot
@@ -62,13 +62,20 @@ jobs:
           export ANDROID_HOME=$ANDROID_SDK_ROOT
           export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT
           export JAVA_HOME=$JAVA_HOME
+          export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
+          
           mkdir -p build/android
+          
+          # Start ADB server and verify connection
+          adb start-server || true
+          adb devices || true
           
           # Run godot once to initialize settings, then export
           godot --path . --headless --editor --quit || true
           
           # Now export the debug apk
           godot --path . --verbose --headless --export-debug "Android" build/android/raiden-game.apk
+
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
